@@ -1,0 +1,6 @@
+{
+  "name": "RentNest",
+  "description": "A residential rental marketplace for verified home listings, digital lease agreements, and tenant escrow security.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
