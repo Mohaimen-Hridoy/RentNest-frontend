@@ -2,7 +2,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Property, PropertyFilterParams, BookingRequest, BookingResponse } from '../types/property';
 import { ListingFormValues, EscrowInquiryValues } from '../schemas/validation';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL ?? 'https://rentnest-backend-x1h1.onrender.com'
+).replace(/\/$/, '');
 const apiUrl = (path: string) => `${API_BASE_URL}${path}`;
 
 export async function fetchProperties(params: PropertyFilterParams = {}): Promise<{ total: number; data: Property[] }> {
