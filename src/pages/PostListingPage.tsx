@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { listingFormSchema, ListingFormValues } from '../schemas/validation';
-import { useCreateListing } from '../api/queries';
+import { uploadPropertyImages, useCreateListing } from '../api/queries';
 import { useApp } from '../context/AppContext';
 import {
   Building,
@@ -20,6 +20,7 @@ import {
 export const PostListingPage: React.FC = () => {
   const { lang, setActivePage, formatPrice } = useApp();
   const [createdSuccess, setCreatedSuccess] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const {
     register,
@@ -78,7 +79,8 @@ export const PostListingPage: React.FC = () => {
 
   const onSubmit = async (values: ListingFormValues) => {
     try {
-      await createListingMutation.mutateAsync(values);
+      const images = selectedImages.length > 0 ? await uploadPropertyImages(selectedImages) : undefined;
+      await createListingMutation.mutateAsync({ ...values, images });
       setCreatedSuccess(true);
     } catch (err: any) {
       console.error('Failed to create listing:', err);
@@ -366,6 +368,18 @@ export const PostListingPage: React.FC = () => {
               </div>
             </div>
 
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">Property Photos</label>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                onChange={(event) => setSelectedImages(Array.from(event.target.files ?? []).slice(0, 8))}
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
+              />
+              <p className="text-[11px] text-slate-500 mt-1">Up to 8 photos, 8 MB each.</p>
+            </div>
+
             {/* Submit Button */}
             <div className="pt-4">
               <button
@@ -398,7 +412,7 @@ export const PostListingPage: React.FC = () => {
               <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
                 <div className="h-44 bg-slate-200 relative">
                   <img
-                    src="/src/assets/images/rentnest_gulshan_lakeview_1790194743752.jpg"
+                    src="/images/rentnest_gulshan_lakeview_1790194743752.jpg"
                     alt="preview"
                     className="w-full h-full object-cover"
                   />

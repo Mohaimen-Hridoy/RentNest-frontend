@@ -58,6 +58,17 @@ export async function createListing(listing: ListingFormValues): Promise<{ succe
   return res.json();
 }
 
+export async function uploadPropertyImages(files: File[]): Promise<string[]> {
+  const formData = new FormData();
+  files.forEach((file) => formData.append('images', file));
+  const res = await fetch(apiUrl('/api/uploads'), { method: 'POST', body: formData });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(json.message || 'Failed to upload property images');
+  }
+  return json.data;
+}
+
 export async function submitEscrowInquiry(inquiry: EscrowInquiryValues): Promise<any> {
   const res = await fetch(apiUrl('/api/escrow-inquiry'), {
     method: 'POST',

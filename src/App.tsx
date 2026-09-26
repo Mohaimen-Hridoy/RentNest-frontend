@@ -94,7 +94,7 @@ const MainDashboard: React.FC = () => {
                   </div>
                   <div className="landing-hero__media relative min-h-62.5 lg:min-h-80 rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
                     <img
-                      src="/src/assets/images/rentnest_gulshan_lakeview_1790194743752.jpg"
+                      src="/images/rentnest_gulshan_lakeview_1790194743752.jpg"
                       alt={lang === 'bn' ? 'গুলশানের লেকভিউ ভেরিফাইড বাসা' : 'Verified lakeview home in Gulshan'}
                       className="absolute inset-0 w-full h-full object-cover"
                     />

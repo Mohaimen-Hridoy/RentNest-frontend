@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { listingFormSchema, ListingFormValues } from '../schemas/validation';
-import { useCreateListing } from '../api/queries';
+import { uploadPropertyImages, useCreateListing } from '../api/queries';
 import { useApp } from '../context/AppContext';
 import {
   X,
@@ -24,6 +24,7 @@ interface AddListingModalProps {
 export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClose }) => {
   const { lang } = useApp();
   const [createdSuccess, setCreatedSuccess] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const {
     register,
@@ -59,7 +60,8 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
 
   const onSubmit = async (values: ListingFormValues) => {
     try {
-      await createListingMutation.mutateAsync(values);
+      const images = selectedImages.length > 0 ? await uploadPropertyImages(selectedImages) : undefined;
+      await createListingMutation.mutateAsync({ ...values, images });
       setCreatedSuccess(true);
     } catch (err: any) {
       console.error('Failed to create listing:', err);
@@ -68,6 +70,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
 
   const handleModalClose = () => {
     setCreatedSuccess(false);
+    setSelectedImages([]);
     reset();
     onClose();
   };
@@ -299,6 +302,19 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({ isOpen, onClos
                 className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-[#004337] focus:outline-none"
               ></textarea>
               {errors.descriptionEn && <p className="text-rose-500 text-[11px] mt-0.5">{errors.descriptionEn.message}</p>}
+            </div>
+
+            {/* Escrow & RAJUK Confirmation */}
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">Property Photos</label>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                onChange={(event) => setSelectedImages(Array.from(event.target.files ?? []).slice(0, 8))}
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
+              />
+              <p className="text-[11px] text-slate-500 mt-1">Up to 8 photos, 8 MB each.</p>
             </div>
 
             {/* Escrow & RAJUK Confirmation */}
